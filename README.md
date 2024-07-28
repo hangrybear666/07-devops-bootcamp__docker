@@ -1,6 +1,10 @@
-# Using Docker to Deploy artifacts on remote VPS host machines.
+# Using Docker to Deploy artifacts on remote VPS host machines
 
 Collection of Dockerfiles, docker-compose files and shell scripts for automating web app deployment on remote VPS hosts.
+
+The main packages are:
+- A local mongodb, mongo-express and node-js development stack
+- 
 
 ## Setup
 
@@ -17,7 +21,7 @@ Collection of Dockerfiles, docker-compose files and shell scripts for automating
 
 3. Install additional dependencies on remote
 
-	Some Linux distros ship without the `netstat` command we use. In that case run `apt install net-tools` or `dnf install net-tools` on fedora et cetera. Do the same with the `jq` package for parsing .json files for step 10 of the Exercises.
+	Some Linux distros ship without the `netstat` command we use. In that case run `apt install net-tools` or `dnf install net-tools` on fedora et cetera.
 
 4. Create environment file in node-app/ folder and add secrets
 	Add an `.env` file in your repository's node-app directory and add the following key value-pairs:
