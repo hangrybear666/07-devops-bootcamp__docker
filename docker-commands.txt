@@ -1,0 +1,23 @@
+# list all docker containers
+docker ps -a
+
+# list all docker images
+docker images -a
+
+# remove docker container
+docker rm <NAME OR HASH>
+
+#remove docker image
+docker rmi <NAME OR HASH>
+
+# pull and run mongo db 
+docker run -d -p 27017:27017 --env-file app/.env --network node-mongo-bridge --name mongodb -v $(pwd)/seed-mongodb.js:/docker-entrypoint-initdb.d/seed-mongodb.js mongo:latest
+
+# pull and run mongo express
+docker run -d  -p 8081:8081 --env-file app/.env --network node-mongo-bridge  --name mongo-express  mongo-express
+
+# build and run app from node-app folder
+docker network create node-mongo-bridge
+docker build -f Dockerfile -t node-app:latest .
+docker run --rm -d --network node-mongo-bridge -p:3000:3000 --env-file app/.env --name node-server node-app
+
