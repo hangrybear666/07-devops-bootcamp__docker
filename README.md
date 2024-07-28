@@ -44,7 +44,27 @@ The main packages are:
 
 ## Usage (Demo Projects)
 
-1. To run a node-js app, mongodb and mongo-express together in local development.
+1. To run a node-js app, mongodb and mongo-express together in local development with manually configured docker containers
+
+	Execute the following commands in order within the `node-app/` folder.
+	```
+
+	# create a bridge network
+	docker network create node-mongo-bridge
+
+	# pull and run mongo db 
+	docker run -d -p 27017:27017 --env-file app/.env --network node-mongo-bridge --name mongodb -v $(pwd)/seed-mongodb.js:/docker-entrypoint-initdb.d/seed-mongodb.js mongo:latest
+
+	# pull and run mongo express
+	docker run -d  -p 8081:8081 --env-file app/.env --network node-mongo-bridge  --name mongo-express  mongo-express
+
+	# build and run app from node-app folder
+	docker build -f Dockerfile -t node-app:latest .
+	docker run --rm -d --network node-mongo-bridge -p:3000:3000 --env-file app/.env --name node-server node-app
+
+	```
+
+2. To run a node-js app, mongodb and mongo-express together in local development with a simple docker-compose script
 
 	To run these 3 images in the same network, simply run `docker-compose up` in the `node_app/` folder.
 	Mongodb is being initialized with a seed script to create a database and collection via `seed-mongodb.js` automatically, so interaction with mongo-express is not required.
