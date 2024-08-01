@@ -24,7 +24,7 @@ The main packages are:
 	Some Linux distros ship without the `netstat` command we use. In that case run `apt install net-tools` or `dnf install net-tools` on fedora et cetera.
 
 4. Create environment file in node-app/ folder and add secrets
-	Add an `.env` file in your repository's node-app directory and add the following key value-pairs:
+	Add an `.env` file in your repository's `node-app/` directory and add the following key value-pairs:
 	```
 	MONGO_DB_USERNAME=admin
 	MONGO_DB_PWD=xxx
@@ -34,8 +34,15 @@ The main packages are:
 	ME_CONFIG_MONGODB_ADMINPASSWORD=xxx
 	ME_CONFIG_MONGODB_SERVER=mongodb
 	ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017
-
 	```
+
+	Add an `.env` file in your repository's root directory and add:
+	```
+	# retrieved in Demo Project Step 4c
+	AWS_ECR_LOGIN_PWD="xxx"
+	AWS_ECR_URL="010928217051.dkr.ecr.eu-north-1.amazonaws.com/node-app"
+
+	``` 
 
 5. Install docker locally.
 
@@ -94,7 +101,11 @@ The main packages are:
 
 	a. First, you have to add the IP address of your remote machine and the root user to `config/remote.properties` file.
 	b. Navigate to `scripts/` folder and install docker on your remote by executing `./remote-install-docker.sh` (THIS SCRIPT IS FOR FEDORA 40 distribution using dnf package manager).
-	c. To login to your private docker repository (ECR on AWS) you have to.............................
+	c. To login to your private docker repository (ECR on AWS) you have to save the output of the following command to your `.env` file in the `AWS_ECR_LOGIN_PWD` key. 
+	```
+	aws ecr get-login-password --region eu-north-1 
+	```
+	Also add the ECR repository url to your `.env` file in the `AWS_ECR_URL` key.
 	d. In the `scripts/` folder, execute the shell script logging in............................
 
 

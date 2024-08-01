@@ -62,5 +62,8 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 
 echo "Installed docker version: \$(docker -v)"
 echo "Installed docker compose version: \$(docker compose version)"
+
+#Start docker daemon service
+sudo systemctl start docker
 EOF
 
