@@ -69,6 +69,23 @@ The main packages are:
 	To run these 3 images in the same network, simply run `docker-compose up` in the `node_app/` folder.
 	Mongodb is being initialized with a seed script to create a database and collection via `seed-mongodb.js` automatically, so interaction with mongo-express is not required.
 
+3. To push a docker image to a private AWS Elastic Container Registry, follow these steps
+
+	a. Make sure you create a user without root privileges in AWS IAM.
+	b. Then create an access key for this user and store the key value pair securely.
+	c. install aws cli on your local machine and run `aws configure` to setup your account. When prompted, provide the access key from step b, choose region `eu-central-1` and `json` as output format.
+	d. Navigate to your AWS ECR Console and get the docker push commands from there.
+
+	In our case, the docker push commands for our private ECR instance are (change version for each image):
+	```
+	cd node-app
+	aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 010928217051.dkr.ecr.eu-north-1.amazonaws.com
+	# remember to change the version each time
+	docker build -f Dockerfile -t node-app:1.0 .
+	docker tag node-app:1.0 010928217051.dkr.ecr.eu-north-1.amazonaws.com/node-app:1.0
+	docker push 010928217051.dkr.ecr.eu-north-1.amazonaws.com/node-app:1.0
+	
+	```
 
 5. Add your Remote Hostname and IP to config/remote.properties
 
