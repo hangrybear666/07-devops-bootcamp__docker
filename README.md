@@ -39,8 +39,11 @@ The main packages are:
 
 5. Install docker locally.
 
-	Make sure to install docker and docker-compose (typically built-in) for local development.
+	Make sure to install docker and docker-compose (typically built-in) for local development. See https://docs.docker.com/engine/install/
 
+6. Install docker on remote.
+
+	Ensure docker is installed on your remote VPS intended to run the node-app with mongo-db. See https://docs.docker.com/engine/install/
 
 ## Usage (Demo Projects)
 
@@ -87,9 +90,14 @@ The main packages are:
 	
 	```
 
-5. Add your Remote Hostname and IP to config/remote.properties
+4. To pull and run a docker image on a remote VPS hosted in the cloud, follow these steps
 
-	First, you have to add the IP address of your remote machine and the root user to `config/remote.properties` file.
+	a. First, you have to add the IP address of your remote machine and the root user to `config/remote.properties` file.
+	b. Navigate to `scripts/` folder and install docker on your remote by executing `./remote-install-docker.sh` (THIS SCRIPT IS FOR FEDORA 40 distribution using dnf package manager).
+	c. To login to your private docker repository (ECR on AWS) you have to.............................
+	d. In the `scripts/` folder, execute the shell script logging in............................
+
+
 
 
 ## Usage (Exercises)
