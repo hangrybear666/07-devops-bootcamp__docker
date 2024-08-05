@@ -4,8 +4,10 @@ let fs = require('fs');
 let MongoClient = require('mongodb').MongoClient;
 let bodyParser = require('body-parser');
 let app = express();
+var cors = require('cors')
 require('dotenv').config()
 
+app.use(cors())
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -28,7 +30,8 @@ let mongoUrlLocal = `mongodb://${process.env.MONGO_DB_USERNAME}:${process.env.MO
 let mongoUrlDockerCompose = `mongodb://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PWD}@mongodb`;
 
 let mongoUrlToUse = process.env.NODE_ENVIRONMENT === 'docker-development' ? mongoUrlDockerCompose : mongoUrlLocal
-
+console.log("NODE_ENVIRONMENT is: " + process.env.NODE_ENVIRONMENT)
+//console.log(`using mongodb Url ${mongoUrlToUse}`)
 // pass these options to mongo client connect request to avoid DeprecationWarning for current Server Discovery and Monitoring engine
 let mongoClientOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
@@ -40,7 +43,10 @@ app.get('/get-profile', function (req, res) {
   let response = {};
   // Connect to the db using local application or docker compose variable in connection properties
   MongoClient.connect(mongoUrlToUse, mongoClientOptions, function (err, client) {
-    if (err) throw err;
+    if (err) {
+      console.error(err)
+      throw err;
+    }
 
     let db = client.db(databaseName);
 
@@ -61,7 +67,10 @@ app.post('/update-profile', function (req, res) {
   let userObj = req.body;
   // Connect to the db using local application or docker compose variable in connection properties
   MongoClient.connect(mongoUrlToUse, mongoClientOptions, function (err, client) {
-    if (err) throw err;
+    if (err) {
+      console.error(err)
+      throw err;
+    }
 
     let db = client.db(databaseName);
     userObj['userid'] = 1;
@@ -70,7 +79,10 @@ app.post('/update-profile', function (req, res) {
     let newvalues = { $set: userObj };
 
     db.collection(collectionName).updateOne(myquery, newvalues, {upsert: true}, function(err, res) {
-      if (err) throw err;
+      if (err) {
+        console.error(err)
+        throw err;
+      }
       client.close();
     });
 

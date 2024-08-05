@@ -26,11 +26,8 @@ services:
       - mongodb
 
   node-server:
-    image: node-app:${VERSION_TAG}
+    image: ${AWS_NODE_IMG_URL}
     container_name: node-server
-    build:
-      context: .
-      dockerfile: Dockerfile
     environment:
       - NODE_ENVIRONMENT=docker-development
     env_file:

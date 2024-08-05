@@ -38,8 +38,6 @@ The main packages are:
 
 	Add an `.env` file in your repository's root directory and add:
 	```
-	# retrieved in Demo Project Step 4c
-	AWS_ECR_LOGIN_PWD="xxx"
 	AWS_ECR_URL="010928217051.dkr.ecr.eu-north-1.amazonaws.com/node-app"
 
 	``` 
@@ -76,8 +74,12 @@ The main packages are:
 
 2. To run a node-js app, mongodb and mongo-express together in local development with a simple docker-compose script
 
-	To run these 3 images in the same network, simply run `docker-compose up` in the `node_app/` folder.
-	Mongodb is being initialized with a seed script to create a database and collection via `seed-mongodb.js` automatically, so interaction with mongo-express is not required.
+	To run these 3 images in the same network, with the desired node-app version simply run in the `node_app/` folder:
+	```
+	export VERSION_TAG=1.0
+	docker compose -f docker-compose.yaml up
+	```
+	P.S.Mongodb is being initialized with a seed script to create a database and collection via `seed-mongodb.js` automatically, so interaction with mongo-express is not required.
 
 3. To push a docker image to a private AWS Elastic Container Registry, follow these steps
 
@@ -101,12 +103,9 @@ The main packages are:
 
 	a. First, you have to add the IP address of your remote machine and the root user to `config/remote.properties` file.
 	b. Navigate to `scripts/` folder and install docker on your remote by executing `./remote-install-docker.sh` (THIS SCRIPT IS FOR FEDORA 40 distribution using dnf package manager).
-	c. To login to your private docker repository (ECR on AWS) you have to save the output of the following command to your `.env` file in the `AWS_ECR_LOGIN_PWD` key. 
-	```
-	aws ecr get-login-password --region eu-north-1 
-	```
-	Also add the ECR repository url to your `.env` file in the `AWS_ECR_URL` key.
-	d. In the `scripts/` folder, execute the shell script logging in............................
+	c. Add the ECR repository url to your `.env` file in the `AWS_ECR_URL` key. 
+	d. Then run `./remote-login-to-docker-registry.sh`. This will login to your docker ECR registry so subsequent docker compose and docker run/pull commands are setup correctly.
+	e. you will be asked to provide the service user password defined in step b - you will also be queried for the node-app tag you want to use, as this is dynamically set as an ENV variable for docker-compose.
 
 
 
