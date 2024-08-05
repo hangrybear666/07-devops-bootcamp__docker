@@ -1,0 +1,50 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    env_file:
+      - app/.env
+    volumes:
+    #  - ${PWD}/seed-mongodb.js:/docker-entrypoint-initdb.d/seed-mongodb.js
+      - mongo-data:/data/db
+    networks:
+      - node-mongo-bridge
+    ports:
+    - 27017:27017
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    env_file:
+      - app/.env
+    networks:
+      - node-mongo-bridge
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongodb
+
+  node-server:
+    image: node-app:${VERSION_TAG}
+    container_name: node-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENVIRONMENT=docker-development
+    env_file:
+      - app/.env
+    networks:
+      - node-mongo-bridge
+    ports:
+    - 3000:3000
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo-data:
+    name: mongo-data
+
+networks:
+  node-mongo-bridge:
+    driver: bridge

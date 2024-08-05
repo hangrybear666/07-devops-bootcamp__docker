@@ -107,7 +107,19 @@ The main packages are:
 	d. Then run `./remote-login-to-docker-registry.sh`. This will login to your docker ECR registry so subsequent docker compose and docker run/pull commands are setup correctly.
 	e. you will be asked to provide the service user password defined in step b - you will also be queried for the node-app tag you want to use, as this is dynamically set as an ENV variable for docker-compose.
 
+5. To run docker containers with volumes attached, specifically mongodb for persistence, we can use anonymous (named) volumes that are managed by docker, making it easier to deal with file permissions and such.
 
+	To attach a persistent volume on your local file system to a the docker container setup, navigate to `node-app/` directory and run:
+	```
+	export VERSION_TAG=1.0
+        docker compose -f docker-compose-with-volumes.yaml up
 
+	```
+	
+	Then:
+	a. head to localhost:8081 with `admin` and `pass` credentials for mongo-express and add the collection users in the database user-account
+	b. head to localhost:3000 and make updates to the user profile.
+	c. stop the docker containers with `docker compose -f docker-compose-with-volumes.yaml down` 
+	
 
 ## Usage (Exercises)
