@@ -50,6 +50,9 @@ The main packages are:
 
 	Ensure docker is installed on your remote VPS intended to run the node-app with mongo-db. See https://docs.docker.com/engine/install/
 
+7. Dont forget to open ports in your remote firewall.
+
+	The port 3000 for express server, 8081 for mongo-express and 27017 for mongodb and 22 for ssh.
 ## Usage (Demo Projects)
 
 1. To run a node-js app, mongodb and mongo-express together in local development with manually configured docker containers
@@ -84,8 +87,11 @@ The main packages are:
 3. To push a docker image to a private AWS Elastic Container Registry, follow these steps
 
 	a. Make sure you create a user without root privileges in AWS IAM.
+
 	b. Then create an access key for this user and store the key value pair securely.
+
 	c. install aws cli on your local machine and run `aws configure` to setup your account. When prompted, provide the access key from step b, choose region `eu-central-1` and `json` as output format.
+
 	d. Navigate to your AWS ECR Console and get the docker push commands from there.
 
 	In our case, the docker push commands for our private ECR instance are (change version for each image):
@@ -102,9 +108,13 @@ The main packages are:
 4. To pull and run a docker image on a remote VPS hosted in the cloud, follow these steps
 
 	a. First, you have to add the IP address of your remote machine and the root user to `config/remote.properties` file.
+
 	b. Navigate to `scripts/` folder and install docker on your remote by executing `./remote-install-docker.sh` (THIS SCRIPT IS FOR FEDORA 40 distribution using dnf package manager).
-	c. Add the ECR repository url to your `.env` file in the `AWS_ECR_URL` key. 
+
+	c. Add the ECR repository url to your `.env` file in the `AWS_ECR_URL` key.
+
 	d. Then run `./remote-login-to-docker-registry.sh`. This will login to your docker ECR registry so subsequent docker compose and docker run/pull commands are setup correctly.
+
 	e. you will be asked to provide the service user password defined in step b - you will also be queried for the node-app tag you want to use, as this is dynamically set as an ENV variable for docker-compose.
 
 5. To run docker containers with volumes attached, specifically mongodb for persistence, we can use anonymous (named) volumes that are managed by docker, making it easier to deal with file permissions and such.
@@ -117,9 +127,68 @@ The main packages are:
 	```
 	
 	Then:
-	a. head to localhost:8081 with `admin` and `pass` credentials for mongo-express and add the collection users in the database user-account
+	a. head to localhost:8081 with `admin` and `pass` credentials for mongo-express and add the collection users in the database user-account.
+
 	b. head to localhost:3000 and make updates to the user profile.
-	c. stop the docker containers with `docker compose -f docker-compose-with-volumes.yaml down` 
+
+	c. stop the docker containers with `docker compose -f docker-compose-with-volumes.yaml down`
+
+	d. the containers were destroyed, now you can run `docker compose -f docker-compose-with-volumes.yaml up` once again and see that the updates from step
 	
+	b. were persisted.
+
+6. To use the existing nexus repository running on a remote VPS server from demo project 6,  adding a docker-registry to it and pushing images to that registry from localhost, follow these steps
+
+	Get the remote url from demo project 6, in my case https://github.com/hangrybear666/06-devops-bootcamp__nexus_artifact_repo/blob/main/config/remote.properties
+	Nexus repository is accessible at `REMOTE_ADDRESS:8081` and the credentials are stored in the `.env` file of your project 6 repo.
+
+	a. Login to the existing nexus repository as an admin user.
+
+	b. Create a new role named `nx-docker` and apply the privilege `nx-repository-view-docker-docker-hosted-*` to it.
+
+	c. Create a new local user named `docker-creds`
+
+	d. Add `Docker Bearer Token Realm` under Realms.
+
+	e. Create a blob store of type File named `docker-hosted-blob`
+
+	f. Store the relevant credential information in this repository's `.env` file.
+	```
+	NEXUS_ADMIN_PASSWORD=xxx
+	NEXUS_USER_1_ID=docker-creds
+	NEXUS_USER_1_PWD=xxx
+	```
+	g. Create a new Repository of type `docker-hosted`, assign the blob store from step e.  and enable the HTTP flag with port 8082 to allow insecure connections without having to configure HTTPS in nexus.
+
+	h. In your local linux distro with docker installed, edit the  `/etc/docker/daemon.json` file and add:
+	```
+	{
+		"insecure-registries" : [ "REMOTE_ADDRESS:8082" ]
+	}
+	```
+	If the file doesn't exist, create it `sudo vim /etc/docker/daemon.json`
+	```
+	sudo systemctl daemon-reload
+	sudo systemctl restart docker
+	docker info
+	``` 
+	Now docker info should print your nexus repository under insecure registries.
+
+	i. Now login to the nexus docker-hosted repository via: 
+	AND DON'T FORGET TO ALLOW PORT 8082 IN YOUR REMOTE VPS FIREWALL
+	```
+	docker login REMOTE_ADDRESS:8082
+	```
+	When prompted, provide the credentials defined in your `env` file in step f. namely `NEXUS_USER_1_ID` and `NEXUS_USER_1_PWD`
+
+	j. Now simply build your desired image, tag it and push it to the repository url you logged in to.
+	```
+	cd node-app
+	docker build -f Dockerfile -t node-app:0.1 .
+	docker tag node-app:0.1 104.248.37.28:8082/node-app:0.1
+	docker push 104.248.37.28:8082/node-app:0.1
+	```
+
+	k. Now you can pull the image via a simple docker pull command, or use the nexus API to fetch the hosted versions and fetch the newest via extraction of the downloadUrl via the jq tool, as demonstrated in https://github.com/hangrybear666/06-devops-bootcamp__nexus_artifact_repo 
 
 ## Usage (Exercises)
