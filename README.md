@@ -4,7 +4,11 @@ Collection of Dockerfiles, docker-compose files and shell scripts for automating
 
 The main packages are:
 - A local mongodb, mongo-express and node-js development stack
-- 
+- A remote nexus repository hosted in a VPS running with java.
+- A remote nexus repository hosted in a VPS running as a docker container.
+- local docker and docker compose setup
+- remote docker and docker compose setup 
+- collection of shell scripts to automatically setup and run docker containers on remote hosts.
 
 ## Setup
 
