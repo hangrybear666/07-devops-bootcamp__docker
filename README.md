@@ -46,17 +46,28 @@ The main packages are:
 
 	``` 
 
-5. Install docker locally.
+5. Add your remote VPS configuration parameters to `config/remote.properties`
+
+	```
+	REMOTE_ADDRESS=167.99.128.206
+	ROOT_USER="root"
+	SERVICE_USER="docker-runner"
+	REMOTE_ADDRESS_2=104.248.37.28
+	SERVICE_USER_2="nexus-docker-runner"
+	```
+
+6. Install docker locally.
 
 	Make sure to install docker and docker-compose (typically built-in) for local development. See https://docs.docker.com/engine/install/
 
-6. Install docker on remote.
+7. Install docker on remote.
 
 	Ensure docker is installed on your remote VPS intended to run the node-app with mongo-db. See https://docs.docker.com/engine/install/
 
-7. Dont forget to open ports in your remote firewall.
+8. Dont forget to open ports in your remote firewall.
 
 	The port 3000 for express server, 8081 for mongo-express and 27017 for mongodb and 22 for ssh.
+
 ## Usage (Demo Projects)
 
 1. To run a node-js app, mongodb and mongo-express together in local development with manually configured docker containers
@@ -195,4 +206,9 @@ The main packages are:
 
 	k. Now you can pull the image via a simple docker pull command, or use the nexus API to fetch the hosted versions and fetch the newest via extraction of the downloadUrl via the jq tool, as demonstrated in https://github.com/hangrybear666/06-devops-bootcamp__nexus_artifact_repo 
 
+7. To setup nexus repository within a docker container deployed on a remote host, follow these steps:
+
+	a. First, install docker on your remote VPS, by running `./remote-install-docker-for-nexus.sh` (This is aimed at Debian like distros with the apt-get package manager)
+
+	b. Then
 ## Usage (Exercises)

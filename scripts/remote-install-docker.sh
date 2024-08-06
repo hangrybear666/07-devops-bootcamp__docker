@@ -40,7 +40,7 @@ echo "$PUBLIC_KEY" > authorized_keys
 echo "added public key to authorized_keys file of new user."
 EOF
 
-# ssh into remote with newly created user to download Java and Gradle 
+# ssh into remote with newly created user to download Docker Engine
 ssh $SERVICE_USER@$REMOTE_ADDRESS <<EOF
 
 # remove prior docker installations
