@@ -208,7 +208,23 @@ The main packages are:
 
 7. To setup nexus repository within a docker container deployed on a remote host, follow these steps:
 
+	Change directory to the `scripts/` folder and:
+
 	a. First, install docker on your remote VPS, by running `./remote-install-docker-for-nexus.sh` (This is aimed at Debian like distros with the apt-get package manager)
 
-	b. Then
+	b. Then run `./remote-run-nexus-docker-img.sh`
+
+	c. Make sure to allow port 8081 forwarding in your VPS firewall settings.
+
+	d. ssh into your remote vps and run the following code to retrieve the default admin password.
+	```
+	docker ps
+	# with the resulting hash run
+	docker exec -it HASH_VALUE sh
+	~sh: 
+	cat /nexus-data/admin.password
+	```
+
+	e. With the retrieved password from step d, navigate to REMOTE_ADDRESS:8081, login to nexus and start using the repository. 
+
 ## Usage (Exercises)
