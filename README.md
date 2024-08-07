@@ -228,3 +228,51 @@ The main packages are:
 	e. With the retrieved password from step d, navigate to REMOTE_ADDRESS:8081, login to nexus and start using the repository. 
 
 ## Usage (Exercises)
+
+0. Setup Environment secrets and configuration
+
+	a. Be sure to have gradle 8 and java 17 installed, I can recommend using sdkman for this https://sdkman.io/install
+
+	b. Create an `.env` file in `exercises/` folder with the following content:
+	```
+	MYSQL_ROOT_PASSWORD=xxx
+	MYSQL_DATABASE=team-member-projects
+	MYSQL_USER=mysql-user
+	MYSQL_PASSWORD=xxx
+	```
+
+	c. If you are executing the local steps on a remote host instead, be sure to open ports 3306 and 8080 and 8085
+
+1. To run a local mysql docker container, mysqlp phpadmin container and a native java spring application locally
+
+	NOTE: If you are running this on a remote host from the get go, you first have to create `target_dir/exercises/` on your remote host via ssh, then recursively copy the `exercises/` folder to your remote via `scp -r exercises root@REMOTE_ADDRESS:~/target_dir/exercises` and you also have to change const HOST = "localhost" to your remote ip address in `exercises/src/main/resources/static/index.html` !
+
+	```
+	cd exercises
+	docker network create mysql-db-gui
+	docker run --name mysqldb --env-file .env --network mysql-db-gui -p 3306:3306 -d mysql:9.0.1
+	
+	# to connect as a mysql client to execute queries from another docker container run
+	docker run -it --network mysql-db-gui --rm mysql:9.0.1 mysql -hmysqldb -umysql-user -p
+
+	# to start phpmyadmin on port 8085 linked to the docker container db
+	docker run --name phpmyadmin --network mysql-db-gui -d --link mysqldb:db -p 8085:80 phpmyadmin:5.2.1-apache
+
+	# build and run .jar file running tomcat on port 8080
+	gradle clean build
+	cd build/libs
+	export DB_USER=mysql-user DB_PWD=sdfpokfepok2012d DB_SERVER=localhost DB_NAME=team-member-projects
+	java -jar docker-exercises-project-1.0-SNAPSHOT.jar
+	```
+	
+	a. Then you can connect to your phpmyadmin instance by accessing `localhost:8085` and logging in via `MYSQL_USER` and `MYSQL_PASSWORD` 
+	b. You can connect to your java application by accessing `localhost:8080`
+
+
+2. To run a mysql db and phpmyadmin with docker compose locally
+
+	```
+	cd exercises
+	
+	
+	```
