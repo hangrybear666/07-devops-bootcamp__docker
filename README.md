@@ -159,7 +159,7 @@ The main packages are:
 
 	a. Login to the existing nexus repository as an admin user.
 
-	b. Create a new role named `nx-docker` and apply the privilege `nx-repository-view-docker-docker-hosted-*` to it.
+	b. Create a new role named `nx-docker` and apply the privilege `nx-repository-view-docker-docker-hosted-*` to it. (NOTE: you might have to create a docker-hosted repo first)
 
 	c. Create a new local user named `docker-creds`
 
@@ -227,6 +227,8 @@ The main packages are:
 
 	e. With the retrieved password from step d, navigate to REMOTE_ADDRESS:8081, login to nexus and start using the repository. 
 
+	f. Make sure to change the password to the one in our .env file from step 6 `NEXUS_ADMIN_PASSWORD=xxx`
+
 ## Usage (Exercises)
 
 0. Setup Environment secrets and configuration
@@ -271,7 +273,7 @@ The main packages are:
 	c. You can connect to your java application by accessing `localhost:8080`
 
 
-2. To run a mysql db and phpmyadmin with docker compose locally
+2. To run a mysql db and phpmyadmin with docker compose 
 
 	```
 	cd exercises
@@ -284,6 +286,13 @@ The main packages are:
 	docker build -f Dockerfile -t java-app:1.0 .
 	# docker run --name java-app -e DB_PWD=sdfpokfepok2012d --network mysql-db-gui -p 8080:8080 java-app:1.4
 	
+	docker login REMOTE_ADDRESS_2:8082
+	Username: NEXUS_USER_1_ID
+	Password: NEXUS_USER_1_PWD
+
+	docker tag java-app:1.0 104.248.37.28:8082/java-app:1.0
+        docker push 104.248.37.28:8082/java-app:1.0
+
 	```
 
-	
+	NOTE: Check in Demo Projects step 6 how to setup the new nexus docker container properly.

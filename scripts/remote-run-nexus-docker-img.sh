@@ -10,7 +10,7 @@ read -p "Please provide password for new user $SERVICE_USER_2: " SERVICE_USER_2_
 ssh $SERVICE_USER_2@$REMOTE_ADDRESS_2 <<EOF
 
 echo $SERVICE_USER_2_PW | sudo -S docker volume create --name nexus-data
-sudo docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
+sudo docker run -d -p 8081:8081 -p 8082:8082 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
 
 EOF
 
