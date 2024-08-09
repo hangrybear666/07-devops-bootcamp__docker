@@ -275,6 +275,15 @@ The main packages are:
 
 	```
 	cd exercises
-	
+	docker compose -f docker-compose-mysql.yaml up
+	```
+
+3. To build and push the Java application as a docker image to nexus repository hosted in a remote VPS
+
+	```
+	docker build -f Dockerfile -t java-app:1.0 .
+	# docker run --name java-app -e DB_PWD=sdfpokfepok2012d --network mysql-db-gui -p 8080:8080 java-app:1.4
 	
 	```
+
+	
