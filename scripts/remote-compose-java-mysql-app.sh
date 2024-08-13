@@ -33,11 +33,20 @@ echo "Copying files via scp..."
 scp exercises/docker-compose-java-app-mysql.yaml $SERVICE_USER@$REMOTE_ADDRESS:~/java-app/
 scp exercises/.env $SERVICE_USER@$REMOTE_ADDRESS:~/java-app/
 
+
+# ssh into remote with root user to login to docker, since later docker commands are executed with sudo, requiring auth credentials to be stored in root
+ssh $ROOT_USER@$REMOTE_ADDRESS <<EOF
+# remove prior auth credentials
+rm -f /root/.docker/config.json
+echo $NEXUS_USER_1_PWD | docker login --username $NEXUS_USER_1_ID --password-stdin $REMOTE_ADDRESS_2:8082
+EOF
+
 # ssh into remote with service user to start the mysql, phpmyadmin and java app with docker compose
 ssh $SERVICE_USER@$REMOTE_ADDRESS <<EOF
 cd java-app
 source .env
 
+export NEXUS_URL=$REMOTE_ADDRESS_2:8082
 export VERSION_TAG=$VERSION_TAG
 export DB_PWD=\$MYSQL_PASSWORD
 

@@ -31,15 +31,13 @@ services:
       - mysqldb
   
   java-app:
-    image: java-app:${VERSION_TAG}
+    image: ${NEXUS_URL}/java-app:${VERSION_TAG}
     container_name: java-app
-    build:
-      context: .
-      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       - DB_PWD=${DB_PWD}
+      - NEXUS_URL=${NEXUS_URL}
     ports:
       - 8080:8080
     networks:
