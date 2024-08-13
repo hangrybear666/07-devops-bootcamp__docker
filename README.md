@@ -120,7 +120,7 @@ The main packages are:
 	
 	```
 
-4. To pull and run a docker image on a remote VPS hosted in the cloud, follow these steps
+4. To pull docker image from AWS ECR and execute it with docker-compose on a remote VPS hosted in the cloud, follow these steps
 
 	a. First, you have to add the IP address of your remote machine and the root user to `config/remote.properties` file.
 
@@ -283,6 +283,7 @@ The main packages are:
 3. To build and push the Java application as a docker image to nexus repository hosted in a remote VPS
 
 	```
+	cd exercises
 	docker build -f Dockerfile -t java-app:1.0 .
 	# docker run --name java-app -e DB_PWD=sdfpokfepok2012d --network mysql-db-gui -p 8080:8080 java-app:1.4
 	
@@ -296,3 +297,11 @@ The main packages are:
 	```
 
 	NOTE: Check in Demo Projects step 6 how to setup the new nexus docker container properly.
+
+4. To run the entire stack, including our java-app on a remote server with one docker-compose command after copying the docker-compose and .env file via scp from local, follow these steps
+
+	First, if you haven't setup the remote hose with docker prior, you have to follow steps 4a) and 4b) from Demo Projects, so docker compose can be run by a service-user. Please remember the service-user password set during this setup as it will be queried when executing the following script.
+
+	Navigate to `scripts/` directory and execute `./remote-compose-java-mysql-app.sh` supplying the service-user password and the desired java-app image version tag
+	
+	NOTE: To configure environment variables, simply edit the `.env` file in your git's root directory, where the `DB_PWD` needed by your java application is stored as `MYSQL_PASSWORD` or edit the `exercises/Dockerfile` for additional environment vars that aren't supposed to be a secret. 
