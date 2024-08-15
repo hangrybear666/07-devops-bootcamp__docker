@@ -18,6 +18,7 @@ useradd -m $SERVICE_USER_2
 # add sudo privileges to service user
 sudo cat /etc/sudoers | grep $SERVICE_USER_2
 
+# ensure provided password is set for service user
 if [ -z "\$( sudo cat /etc/sudoers | grep $SERVICE_USER_2 )" ]
 then
   echo "$SERVICE_USER_2 ALL=(ALL:ALL) ALL" | sudo EDITOR="tee -a" visudo
@@ -26,9 +27,10 @@ else
   echo "$SERVICE_USER_2 found in sudoers file."
 fi
 
+# ensure provided password is set for service user
 echo "$SERVICE_USER_2:$SERVICE_USER_2_PW" | chpasswd
 
-# switch to new user
+# switch to new service user
 su - $SERVICE_USER_2
 
 # add public key to new user's authorized keys
@@ -66,6 +68,7 @@ sudo apt-get update
 # install docker
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# Notify user with installed docker version
 echo "Installed docker version: \$(docker -v)"
 echo "Installed docker compose version: \$(docker compose version)"
 

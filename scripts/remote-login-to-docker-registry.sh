@@ -44,7 +44,6 @@ fi
 EOF
 
 # copy docker compose and node-app .env file to remote via scp
-
 cd ..
 echo "Copying files via scp..."
 scp node-app/docker-compose-remote.yaml $SERVICE_USER@$REMOTE_ADDRESS:~/node-app/
@@ -54,6 +53,7 @@ scp node-app/seed-mongodb.js $SERVICE_USER@$REMOTE_ADDRESS:~/node-app/
 # ssh into remote with service user to start the mongo, mongo-express and node app with docker compose
 ssh $SERVICE_USER@$REMOTE_ADDRESS <<EOF
 cd node-app
+# expose the artifact download URL constructed with remote url and version tag
 export AWS_NODE_IMG_URL=$AWS_ECR_URL:$VERSION_TAG
 
 # -E flag preserves environment variables through the new sudo environment

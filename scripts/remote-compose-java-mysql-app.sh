@@ -27,12 +27,10 @@ fi
 EOF
 
 # copy docker compose and java-app .env file to remote via scp
-
 cd ..
 echo "Copying files via scp..."
 scp exercises/docker-compose-java-app-mysql.yaml $SERVICE_USER@$REMOTE_ADDRESS:~/java-app/
 scp exercises/.env $SERVICE_USER@$REMOTE_ADDRESS:~/java-app/
-
 
 # ssh into remote with root user to login to docker, since later docker commands are executed with sudo, requiring auth credentials to be stored in root
 ssh $ROOT_USER@$REMOTE_ADDRESS <<EOF
@@ -44,8 +42,10 @@ EOF
 # ssh into remote with service user to start the mysql, phpmyadmin and java app with docker compose
 ssh $SERVICE_USER@$REMOTE_ADDRESS <<EOF
 cd java-app
+# expose env vars created by the user prior
 source .env
 
+# expose environment variables not part of .env file
 export NEXUS_URL=$REMOTE_ADDRESS_2:8082
 export VERSION_TAG=$VERSION_TAG
 export DB_PWD=\$MYSQL_PASSWORD
