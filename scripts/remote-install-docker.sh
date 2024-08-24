@@ -18,6 +18,7 @@ useradd -m $SERVICE_USER
 # add sudo privileges to service user
 sudo cat /etc/sudoers | grep $SERVICE_USER
 
+# ensure the service user is registered for sudo commands
 if [ -z "\$( sudo cat /etc/sudoers | grep $SERVICE_USER )" ]
 then
   echo "$SERVICE_USER ALL=(ALL:ALL) ALL" | sudo EDITOR="tee -a" visudo
@@ -26,9 +27,10 @@ else
   echo "$SERVICE_USER found in sudoers file."
 fi
 
+# ensure provided password is set for service user
 echo "$SERVICE_USER:$SERVICE_USER_PW" | chpasswd
 
-# switch to new user
+# switch to new service user
 su - $SERVICE_USER
 
 # add public key to new user's authorized keys
@@ -60,6 +62,7 @@ sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# Notify user with installed docker version
 echo "Installed docker version: \$(docker -v)"
 echo "Installed docker compose version: \$(docker compose version)"
 
