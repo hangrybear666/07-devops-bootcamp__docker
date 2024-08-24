@@ -49,7 +49,7 @@ ssh $SERVICE_USER_2@$REMOTE_ADDRESS_2 <<EOF
 echo $SERVICE_USER_2_PW | sudo -S ls
 
 # remove prior docker installations
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo -S apt-get remove $pkg; done
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo -S apt-get remove \$pkg; done
 
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -60,7 +60,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  "deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   \$(. /etc/os-release && echo "\$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
